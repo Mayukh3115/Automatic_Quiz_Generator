@@ -1,0 +1,113 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Quiz Generator</title>
+
+  <!-- External CSS -->
+  <link rel="stylesheet" href="{% static 'css/quiz.css' %}">
+
+  <!-- Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+  <div class="shell">
+    <div class="card">
+      <div class="header">
+        <div class="title-block">
+          <h1>
+            AI Quiz Generator
+            <span class="title-pill">Powered by Gemini</span>
+          </h1>
+          <p class="subtitle">
+            Type a topic, choose difficulty and number of questions,
+            and get an interactive quiz where options show <strong>right / wrong</strong> on click.
+          </p>
+        </div>
+        <div class="header-badge">
+          <span class="header-badge-dot"></span>
+          Live · JSON API connected
+        </div>
+      </div>
+
+      <div class="layout">
+        <!-- Left: Form -->
+        <form id="quiz-form">
+          <div class="field">
+            <label for="topic">Topic</label>
+            <input
+              type="text"
+              id="topic"
+              placeholder="e.g. Newtonian mechanics, data structures, world war II"
+              required
+            />
+            <div class="hint">
+              The more specific you are, the better the questions.
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="num_ques">Questions</label>
+              <input type="number" id="num_ques" min="1" max="20" value="5" />
+              <div class="hint">1–20 recommended</div>
+            </div>
+
+            <div class="field">
+              <label for="difficulty">Difficulty</label>
+              <select id="difficulty">
+                <option value="school">School</option>
+                <option value="high-school">High school</option>
+                <option value="university" selected>University</option>
+                <option value="competitive exam">Competitive exam</option>
+                <option value="expert">Expert</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="controls-row">
+            <button type="submit" class="button-primary" id="generate-btn">
+              <span>Generate Quiz</span>
+              <span>⚡</span>
+            </button>
+
+            <div class="status" id="status">
+              <span class="status-dot"></span>
+              <span>Ready</span>
+            </div>
+          </div>
+        </form>
+
+        <!-- Right: Quiz display -->
+        <div class="quiz-panel">
+          <div class="quiz-header-row">
+            <div class="quiz-meta" id="quiz-meta">
+              <div class="meta-pill">No quiz loaded yet</div>
+            </div>
+            <button type="button" class="button-ghost" id="show-answers-btn" disabled>
+              👁 Show all answers
+            </button>
+          </div>
+
+          <div class="questions-scroll" id="quiz-container">
+            <div class="empty-state">
+              <p><strong>Tip:</strong> Try “Python basics” or “Electromagnetic waves – university level”.</p>
+            </div>
+          </div>
+
+          <div class="footer-note" id="score-area" style="display:none;">
+            <span class="pill-badge">
+              Your score: <span id="score-text">0 / 0</span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<script src="{% static 'js/quiz.js' %}"></script>
+</body>
+</html>
