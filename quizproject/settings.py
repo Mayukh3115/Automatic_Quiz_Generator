@@ -76,7 +76,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'quizproject.wsgi.application'
 
-CSRF_TRUSTED_ORIGINS = CSRF_TRUSTED_ORIGINS = config(
+CSRF_TRUSTED_ORIGINS = config(
     "CSRF_TRUSTED_ORIGINS",
     default="http://localhost:8001,http://127.0.0.1:8001",
     cast=lambda v: v.split(","),
@@ -136,3 +136,10 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
+
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = "DENY"

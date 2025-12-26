@@ -6,11 +6,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI Quiz Generator</title>
-
-  <!-- External CSS -->
   <link rel="stylesheet" href="{% static 'css/quiz.css' %}">
-
-  <!-- Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
   {% if user.is_authenticated %}
   <p>Welcome, {{ user.username }} | <a href="/accounts/logout/">Logout</a></p>
@@ -41,7 +37,6 @@
       </div>
 
       <div class="layout">
-        <!-- Left: Form -->
         <form id="quiz-form" method="post">
           {% csrf_token %}
           <div class="field">
@@ -88,8 +83,6 @@
             </div>
           </div>
         </form>
-
-        <!-- Right: Quiz display -->
         <div class="quiz-panel">
           <div class="quiz-header-row">
             <div class="quiz-meta" id="quiz-meta">

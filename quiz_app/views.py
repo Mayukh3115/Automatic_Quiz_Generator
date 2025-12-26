@@ -15,18 +15,12 @@ import re
 logger = logging.getLogger(__name__)
 
 
-# -----------------------------
-# Gemini client
-# -----------------------------
 if settings.GEMINI_API_KEY:
     gemini_client = genai.Client(api_key=settings.GEMINI_API_KEY)
 else:
     gemini_client = None
 
 
-# -----------------------------
-# Helper: auth-safe API check
-# -----------------------------
 def require_auth_json(request):
     if not request.user.is_authenticated:
         return JsonResponse(
@@ -36,9 +30,6 @@ def require_auth_json(request):
     return None
 
 
-# -----------------------------
-# Prompt builder
-# -----------------------------
 def create_prompt(topic: str, num_ques: int, difficulty: str) -> str:
     return (
         f"Generate exactly {num_ques} multiple-choice questions about \"{topic}\" "
@@ -64,9 +55,6 @@ def extract_json_object(text: str) -> str:
     return text[start:end + 1]
 
 
-# -----------------------------
-# Generate Quiz API
-# -----------------------------
 def generate_quiz(request):
     auth_error = require_auth_json(request)
     if auth_error:
@@ -104,9 +92,6 @@ def generate_quiz(request):
         return HttpResponse("Server error", status=500)
 
 
-# -----------------------------
-# Download PDF API
-# -----------------------------
 def download_quiz_pdf(request):
     auth_error = require_auth_json(request)
     if auth_error:
@@ -149,9 +134,6 @@ def download_quiz_pdf(request):
         return HttpResponse("PDF error", status=500)
 
 
-# -----------------------------
-# Signup view
-# -----------------------------
 def signup(request):
     next_url = request.GET.get("next", "/")
 

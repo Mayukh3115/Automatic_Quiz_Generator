@@ -13,9 +13,6 @@ document.addEventListener("DOMContentLoaded", () => {
   let answeredCount = 0;
   let correctCount = 0;
 
-  /* -------------------------------
-     CSRF helper
-  -------------------------------- */
   function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== "") {
@@ -33,9 +30,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const csrftoken = getCookie("csrftoken");
 
-  /* -------------------------------
-     Auth-safe fetch
-  -------------------------------- */
   async function authFetch(url, options) {
     const res = await fetch(url, options);
     if (res.status === 401 || res.status === 403) {
@@ -45,9 +39,6 @@ document.addEventListener("DOMContentLoaded", () => {
     return res;
   }
 
-  /* -------------------------------
-     UI helpers
-  -------------------------------- */
   function setStatus(text, busy = false) {
     statusEl.querySelector("span:last-child").textContent = text;
     generateBtn.disabled = busy;
@@ -72,9 +63,6 @@ document.addEventListener("DOMContentLoaded", () => {
     scoreArea.style.display = "block";
   }
 
-  /* -------------------------------
-     Render quiz
-  -------------------------------- */
   function renderQuiz(quizData, topic, difficulty) {
     currentQuiz = quizData;
     quizContainer.innerHTML = "";
@@ -113,7 +101,6 @@ document.addEventListener("DOMContentLoaded", () => {
       quizContainer.appendChild(card);
     });
 
-    /* ✅ CLICK LOGIC WITH DISABLE */
     quizContainer.querySelectorAll(".option-btn").forEach(btn => {
       btn.addEventListener("click", () => {
         const card = btn.closest(".question-card");
@@ -124,17 +111,14 @@ document.addEventListener("DOMContentLoaded", () => {
         const correct = btn.dataset.correct === "true";
         updateScore(correct);
 
-        // Disable ALL options
         card.querySelectorAll(".option-btn").forEach(b => {
           b.disabled = true;
           b.style.pointerEvents = "none";
           b.classList.remove("selected", "correct", "incorrect");
         });
 
-        // Highlight selected option
         btn.classList.add("selected", correct ? "correct" : "incorrect");
 
-        // Feedback
         const fb = card.querySelector(".feedback");
         fb.style.display = "flex";
         fb.className = "feedback " + (correct ? "correct" : "incorrect");
@@ -145,9 +129,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  /* -------------------------------
-     Generate quiz
-  -------------------------------- */
   form.addEventListener("submit", async e => {
     e.preventDefault();
 
@@ -178,9 +159,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  /* -------------------------------
-     Download PDF
-  -------------------------------- */
   downloadBtn.addEventListener("click", async () => {
     if (!currentQuiz.length) return;
 
