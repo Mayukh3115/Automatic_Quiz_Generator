@@ -3,30 +3,28 @@ from django.http import HttpResponse, JsonResponse
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 from io import BytesIO
-from google import genai
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 
+import google.generativeai as genai
 import json
 import logging
 import re
+import os
 
 logger = logging.getLogger(__name__)
 
-
 if settings.GEMINI_API_KEY:
-    gemini_client = genai.Client(api_key=settings.GEMINI_API_KEY)
+    genai.configure(api_key=settings.GEMINI_API_KEY)
+    model = genai.GenerativeModel("gemini-2.5-flash")
 else:
-    gemini_client = None
+    model = None
 
 
 def require_auth_json(request):
     if not request.user.is_authenticated:
-        return JsonResponse(
-            {"error": "AUTH_REQUIRED"},
-            status=401
-        )
+        return JsonResponse({"error": "AUTH_REQUIRED"}, status=401)
     return None
 
 
@@ -60,7 +58,7 @@ def generate_quiz(request):
     if auth_error:
         return auth_error
 
-    if gemini_client is None:
+    if model is None:
         return HttpResponse("Gemini API key not configured", status=500)
 
     if request.method != "POST":
@@ -74,13 +72,9 @@ def generate_quiz(request):
 
         prompt = create_prompt(topic, num_ques, difficulty)
 
-        response = gemini_client.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=prompt
-        )
+        response = model.generate_content(prompt)
 
-        raw = response.text or ""
-        raw = raw.strip("`")
+        raw = response.text.strip("`")
         raw = re.sub(r"^\s*json", "", raw, flags=re.I)
 
         quiz_data = json.loads(extract_json_object(raw))
