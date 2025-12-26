@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const statusEl = document.getElementById("status");
   const generateBtn = document.getElementById("generate-btn");
   const quizContainer = document.getElementById("quiz-container");
+  const showAnswersBtn = document.getElementById("show-answers-btn");
   const downloadBtn = document.getElementById("download-pdf-btn");
   const quizMeta = document.getElementById("quiz-meta");
   const scoreArea = document.getElementById("score-area");
@@ -14,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let correctCount = 0;
 
   /* -------------------------------
-     CSRF helper
+     CSRF helper (Django standard)
   -------------------------------- */
   function getCookie(name) {
     let cookieValue = null;
@@ -34,17 +35,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const csrftoken = getCookie("csrftoken");
 
   /* -------------------------------
-     Auth-safe fetch
+     AUTH-SAFE FETCH WRAPPER
   -------------------------------- */
   async function authFetch(url, options) {
-    const res = await fetch(url, options);
-    if (res.status === 401 || res.status === 403) {
-      window.location.href = "/signup/?next=/";
-      return null;
-    }
-    return res;
+  const res = await fetch(url, options);
+
+  if (res.status === 401 || res.status === 403) {
+    window.location.href = "/signup/?next=/";
+    return null;
   }
 
+  return res;
+}
   /* -------------------------------
      UI helpers
   -------------------------------- */
@@ -86,6 +88,7 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
 
     resetScore();
+    showAnswersBtn.disabled = false;
     downloadBtn.disabled = false;
 
     quizData.forEach((q, idx) => {
@@ -113,34 +116,16 @@ document.addEventListener("DOMContentLoaded", () => {
       quizContainer.appendChild(card);
     });
 
-    /* ✅ CLICK LOGIC WITH DISABLE */
     quizContainer.querySelectorAll(".option-btn").forEach(btn => {
       btn.addEventListener("click", () => {
         const card = btn.closest(".question-card");
-
-        if (card.dataset.answered === "true") return;
+        if (card.dataset.answered) return;
 
         card.dataset.answered = "true";
         const correct = btn.dataset.correct === "true";
         updateScore(correct);
 
-        // Disable ALL options
-        card.querySelectorAll(".option-btn").forEach(b => {
-          b.disabled = true;
-          b.style.pointerEvents = "none";
-          b.classList.remove("selected", "correct", "incorrect");
-        });
-
-        // Highlight selected option
-        btn.classList.add("selected", correct ? "correct" : "incorrect");
-
-        // Feedback
-        const fb = card.querySelector(".feedback");
-        fb.style.display = "flex";
-        fb.className = "feedback " + (correct ? "correct" : "incorrect");
-        fb.innerHTML = correct
-          ? `<span class="feedback-dot correct"></span> Correct! 🎉`
-          : `<span class="feedback-dot incorrect"></span> Incorrect`;
+        btn.classList.add(correct ? "correct" : "incorrect");
       });
     });
   }
@@ -167,46 +152,50 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         body: JSON.stringify({ topic, num_ques, difficulty })
       });
-
+      
       if (!res) return;
 
       const data = await res.json();
       renderQuiz(data.quiz, topic, difficulty);
       setStatus("Ready");
-    } catch {
+    } catch (err) {
       setStatus("Error");
     }
   });
 
   /* -------------------------------
-     Download PDF
+     Download quiz as PDF
   -------------------------------- */
   downloadBtn.addEventListener("click", async () => {
     if (!currentQuiz.length) return;
 
-    const res = await authFetch("/download_quiz_pdf/", {
-      method: "POST",
-      credentials: "same-origin",
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRFToken": csrftoken
-      },
-      body: JSON.stringify({
-        topic: topicInput.value || "Quiz",
-        quiz: currentQuiz
-      })
-    });
+    try {
+      const res = await authFetch("/download_quiz_pdf/", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": csrftoken
+        },
+        body: JSON.stringify({
+          topic: topicInput.value || "Quiz",
+          quiz: currentQuiz
+        })
+      });
 
-    if (!res) return;
+      if (!res) return;
 
-    const blob = await res.blob();
-    const url = URL.createObjectURL(blob);
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
 
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "quiz.pdf";
-    a.click();
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "quiz.pdf";
+      a.click();
 
-    URL.revokeObjectURL(url);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      /* authFetch already redirected */
+    }
   });
 });

@@ -1,0 +1,54 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sign up · AI Quiz Generator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Reuse existing CSS -->
+  <link rel="stylesheet" href="{% static 'css/quiz.css' %}">
+</head>
+
+<body>
+  <div class="shell">
+    <div class="card" style="max-width: 420px; margin: auto;">
+      <div class="header">
+        <div class="title-block">
+          <h1>Create Account</h1>
+          <p class="subtitle">Join and start generating quizzes</p>
+        </div>
+      </div>
+
+      <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ next }}">
+
+        <div class="field">
+          <label>Username</label>
+          {{ form.username }}
+        </div>
+
+        <div class="field">
+          <label>Password</label>
+          {{ form.password1 }}
+        </div>
+
+        <div class="field">
+          <label>Confirm Password</label>
+          {{ form.password2 }}
+        </div>
+
+        <button type="submit" class="button-primary" style="width:100%;">
+          Sign up
+        </button>
+      </form>
+
+      <div class="footer-note" style="text-align:center;">
+        Already have an account?
+        <a href="/accounts/login/?next={{ next }}">Login</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

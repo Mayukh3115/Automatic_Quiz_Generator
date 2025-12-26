@@ -12,6 +12,12 @@
 
   <!-- Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
+  {% if user.is_authenticated %}
+  <p>Welcome, {{ user.username }} | <a href="/accounts/logout/">Logout</a></p>
+  {% else %}
+  <a href="/accounts/login/">Login</a> |
+  <a href="/signup/">Sign up</a>
+  {% endif %}
 </head>
 
 <body>
@@ -36,7 +42,8 @@
 
       <div class="layout">
         <!-- Left: Form -->
-        <form id="quiz-form">
+        <form id="quiz-form" method="post">
+          {% csrf_token %}
           <div class="field">
             <label for="topic">Topic</label>
             <input
@@ -90,6 +97,9 @@
             </div>
             <button type="button" class="button-ghost" id="show-answers-btn" disabled>
               👁 Show all answers
+            </button>
+            <button type="button" class="button-ghost" id="download-pdf-btn" disabled>
+              📄 Download PDF
             </button>
           </div>
 
