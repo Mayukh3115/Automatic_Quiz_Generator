@@ -6,19 +6,32 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI Quiz Generator</title>
+
   <link rel="stylesheet" href="{% static 'css/quiz.css' %}">
   <script src="https://unpkg.com/lucide@latest"></script>
-  {% if user.is_authenticated %}
-  <p>Welcome, {{ user.username }} | <a href="/accounts/logout/">Logout</a></p>
-  {% else %}
-  <a href="/accounts/login/">Login</a> |
-  <a href="/signup/">Sign up</a>
-  {% endif %}
 </head>
 
 <body>
+
+  <!-- 🔐 AUTH BAR -->
+  <div style="display:flex; justify-content:flex-end; align-items:center; gap:12px; padding:12px;">
+    {% if user.is_authenticated %}
+      <span>Welcome, <strong>{{ user.username }}</strong></span>
+
+      <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit">Logout</button>
+      </form>
+    {% else %}
+      <a href="{% url 'login' %}">Login</a>
+      <a href="{% url 'signup' %}">Sign up</a>
+    {% endif %}
+  </div>
+
+  <!-- MAIN CONTAINER -->
   <div class="shell">
     <div class="card">
+
       <div class="header">
         <div class="title-block">
           <h1>
@@ -27,9 +40,11 @@
           </h1>
           <p class="subtitle">
             Type a topic, choose difficulty and number of questions,
-            and get an interactive quiz where options show <strong>right / wrong</strong> on click.
+            and get an interactive quiz where options show
+            <strong>right / wrong</strong> on click.
           </p>
         </div>
+
         <div class="header-badge">
           <span class="header-badge-dot"></span>
           Live · JSON API connected
@@ -37,14 +52,17 @@
       </div>
 
       <div class="layout">
+
+        <!-- QUIZ FORM -->
         <form id="quiz-form" method="post">
           {% csrf_token %}
+
           <div class="field">
             <label for="topic">Topic</label>
             <input
               type="text"
               id="topic"
-              placeholder="e.g. Newtonian mechanics, data structures, world war II"
+              placeholder="e.g. Newtonian mechanics, data structures"
               required
             />
             <div class="hint">
@@ -83,14 +101,18 @@
             </div>
           </div>
         </form>
+
+        <!-- QUIZ OUTPUT -->
         <div class="quiz-panel">
           <div class="quiz-header-row">
             <div class="quiz-meta" id="quiz-meta">
               <div class="meta-pill">No quiz loaded yet</div>
             </div>
+
             <button type="button" class="button-ghost" id="show-answers-btn" disabled>
               👁 Show all answers
             </button>
+
             <button type="button" class="button-ghost" id="download-pdf-btn" disabled>
               📄 Download PDF
             </button>
@@ -98,7 +120,10 @@
 
           <div class="questions-scroll" id="quiz-container">
             <div class="empty-state">
-              <p><strong>Tip:</strong> Try “Python basics” or “Electromagnetic waves – university level”.</p>
+              <p>
+                <strong>Tip:</strong> Try “Python basics” or
+                “Electromagnetic waves – university level”.
+              </p>
             </div>
           </div>
 
@@ -108,9 +133,12 @@
             </span>
           </div>
         </div>
+
       </div>
     </div>
   </div>
-<script src="{% static 'js/quiz.js' %}"></script>
+
+  <script src="{% static 'js/quiz.js' %}"></script>
+
 </body>
 </html>

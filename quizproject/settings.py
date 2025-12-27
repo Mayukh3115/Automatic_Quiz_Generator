@@ -94,9 +94,9 @@ DATABASES = {
     }
 }
 
-LOGIN_URL = "/signup/"
-LOGIN_REDIRECT_URL = "/"
-LOGOUT_REDIRECT_URL = "/signup/"
+LOGIN_URL = "/accounts/login/"
+LOGIN_REDIRECT_URL = "home"
+LOGOUT_REDIRECT_URL = "signup"
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators

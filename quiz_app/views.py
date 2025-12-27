@@ -6,6 +6,8 @@ from io import BytesIO
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import login
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 import google.generativeai as genai
 import json
@@ -20,6 +22,11 @@ if settings.GEMINI_API_KEY:
     model = genai.GenerativeModel("gemini-2.5-flash")
 else:
     model = None
+
+@ensure_csrf_cookie
+@login_required
+def quiz_page(request):
+    return render(request, "quiz/quiz.html")
 
 
 def require_auth_json(request):
@@ -129,13 +136,17 @@ def download_quiz_pdf(request):
 
 
 def signup(request):
+    if request.user.is_authenticated:
+        return redirect("home")
+
     next_url = request.GET.get("next", "/")
 
     if request.method == "POST":
         form = UserCreationForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect(f"/accounts/login/?next={next_url}")
+            user = form.save()
+            login(request, user)
+            return redirect(next_url)
     else:
         form = UserCreationForm()
 
