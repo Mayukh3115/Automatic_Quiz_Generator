@@ -98,9 +98,6 @@ body {
   box-shadow: 0 0 0 4px rgba(74, 222, 128, 0.25);
 }
 
-/* -------------------
-   FORM & INPUTS
--------------------- */
 
 .layout {
   display: grid;
@@ -168,9 +165,6 @@ select:focus {
   color: var(--muted);
 }
 
-/* -------------------
-   BUTTONS
--------------------- */
 
 .button-primary {
   padding: 0.75rem 1.6rem;
@@ -228,9 +222,6 @@ select:focus {
   background: var(--success);
 }
 
-/* -------------------
-   QUIZ PANEL
--------------------- */
 
 .quiz-panel {
   padding: 1.25rem;
@@ -263,15 +254,11 @@ select:focus {
   background: rgba(15, 23, 42, 0.72);
 }
 
-/* Scroll area */
 .questions-scroll {
   overflow-y: auto;
   padding-right: 0.4rem;
 }
 
-/* -------------------
-   QUESTION CARDS
--------------------- */
 
 .question-card {
   padding: 1rem;
@@ -305,9 +292,6 @@ select:focus {
   line-height: 1.4;
 }
 
-/* -------------------
-   OPTIONS
--------------------- */
 
 .options {
   display: grid;
@@ -351,7 +335,6 @@ select:focus {
   flex: 1;
 }
 
-/* Correct/Incorrect states */
 
 .option-btn.selected.correct {
   border-color: var(--success);
@@ -370,9 +353,6 @@ select:focus {
   background: radial-gradient(circle at top left, rgba(74, 222, 128, 0.2), transparent);
 }
 
-/* -------------------
-   FEEDBACK
--------------------- */
 
 .feedback {
   margin-top: 0.5rem;
@@ -404,9 +384,6 @@ select:focus {
   background: var(--danger);
 }
 
-/* -------------------
-   EMPTY STATE
--------------------- */
 
 .empty-state {
   text-align: center;
@@ -418,9 +395,6 @@ select:focus {
   color: var(--accent);
 }
 
-/* -------------------
-   SCORE BADGE
--------------------- */
 
 .footer-note {
   margin-top: 0.75rem;
