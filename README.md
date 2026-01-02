@@ -59,7 +59,7 @@ The application is intended to demonstrate functionality rather than long-term d
 
 ## 👨‍💻 Author
 
-Built by **[Your Name]**
+Built by **Mayukh Bhattacharyya**
 
 ---
 
